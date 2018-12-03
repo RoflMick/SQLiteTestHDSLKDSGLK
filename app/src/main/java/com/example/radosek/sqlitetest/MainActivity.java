@@ -32,9 +32,10 @@ public class MainActivity extends Activity {
         //ziskam do jedno listu vsechny polozky
         ArrayList arrayList = mydb.getAllContacsName();
 
-        ArrayAdapter arrayAdapter=new ArrayAdapter(this,android.R.layout.simple_list_item_1, arrayList);
+        ArrayAdapter arrayAdapter = new ArrayAdapter(this,android.R.layout.simple_list_item_1, arrayList);
 
         obj = (ListView)findViewById(R.id.listView1);
+        arrayAdapter.notifyDataSetChanged();
         obj.setAdapter(arrayAdapter);
         obj.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -45,7 +46,6 @@ public class MainActivity extends Activity {
                 //TODO 2: zavolat aktivitu, ktera bude zobrazovat informace o zaznamu v db a predat ji hledane id zaznamu
                 Bundle dataBundle = new Bundle();
                 dataBundle.putInt("id", id_To_Search);
-
                 Intent intent = new Intent(getApplicationContext(), DisplayContact.class);
                 intent.putExtras(dataBundle);
                 startActivity(intent);
@@ -62,8 +62,8 @@ public class MainActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.addNew){
+        int itemId = item.getItemId();
+        if (itemId == R.id.addNew){
             //TODO 1: v menu (pokud je zvoleno vytvoreni noveho itemu) zavolat novou aktivity na pridani kontaktu
             Intent intent = new Intent(getApplicationContext(), DisplayContact.class);
             Bundle dataBundle = new Bundle();
@@ -72,7 +72,7 @@ public class MainActivity extends Activity {
             startActivity(intent);
         }
 
-        if (id == R.id.Delete_All_Contact){
+        if (itemId == R.id.Delete_All_Contact){
             mydb.removeAll();
             Toast.makeText(getApplicationContext(), "Deleted All Successfully", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(getApplicationContext(),MainActivity.class);
@@ -80,7 +80,7 @@ public class MainActivity extends Activity {
         }
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings){
+        if (itemId == R.id.action_settings){
             return true;
         }
 

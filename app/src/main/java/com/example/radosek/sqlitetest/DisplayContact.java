@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -18,7 +20,7 @@ public class DisplayContact extends Activity {
     private DBHelper mydb;
     TextView name;
     TextView cost;
-    Spinner spinner;
+    Spinner type;
 
     int id_To_Update = 0;
 
@@ -28,31 +30,74 @@ public class DisplayContact extends Activity {
         setContentView(R.layout.activity_display_contact2);
 
         name = (TextView) findViewById(R.id.editTextName);
+        type = (Spinner) findViewById(R.id.spinnerType);
+        cost = (TextView) findViewById(R.id.editTextCost);
         mydb = new DBHelper(this);
 
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, getResources().getStringArray(R.array.fuel_types));
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        type.setAdapter(spinnerAdapter);
+
+        type.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String selectedItemText = (String) adapterView.getItemAtPosition(i);
+                Toast.makeText
+                        (getApplicationContext(), "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
+                        .show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
         Bundle extras = getIntent().getExtras();
-        if(extras !=null) {
+        if(extras != null) {
             //ziskam ID ktere se ma editovat/zobrazit/mazat poslane z main aktivity
             int value = extras.getInt("id");
+
             if (value > 0){
                 //z database vytahnu zaznam pod hledanym ID a ulozim do id_To_Update
                 Cursor rs = mydb.getData(value);
                 id_To_Update = value;
+                Toast.makeText(getApplicationContext(), "Clicked on " + value, Toast.LENGTH_SHORT).show();
                 rs.moveToFirst();
 
                 //vytahnu zaznam se jmenem
-                String nam = rs.getString(rs.getColumnIndex(DBHelper.CONTACTS_COLUMN_NAME));
+                int idTodelete = rs.getInt(rs.getColumnIndex(DBHelper.CONTACTS_COLUMN_ID));
+
+                String strName = rs.getString(rs.getColumnIndex(DBHelper.CONTACTS_COLUMN_NAME));
+                String strType = rs.getString(rs.getColumnIndex(DBHelper.CONTACTS_COLUMN_TYPE));
+                String strCost = rs.getString(rs.getColumnIndex(DBHelper.CONTACTS_COLUMN_COST));
 
                 if (!rs.isClosed()) {
                     rs.close();
                 }
+
                 Button b = (Button)findViewById(R.id.buttonSave);
                 b.setVisibility(View.INVISIBLE);
 
-                name.setText((CharSequence)nam);
+                name.setText(strName);
                 name.setEnabled(false);
                 name.setFocusable(false);
                 name.setClickable(false);
+
+//                int spinnerPosition = spinnerAdapter.getPosition(String.valueOf(type.getSelectedItem()));
+//                Toast.makeText(this, "Selected type" + String.valueOf(type.getSelectedItem()), Toast.LENGTH_SHORT).show();
+//                type.setSelection(spinnerPosition);
+//                Toast.makeText(this, "Index " + spinnerAdapter.getPosition(type.getSelectedItem().toString()) + " " + type.getSelectedItem().toString(), Toast.LENGTH_SHORT).show();
+
+                type.setSelection(spinnerAdapter.getPosition(strType));
+                type.setEnabled(false);
+                type.setFocusable(false);
+                type.setClickable(false);
+
+                cost.setText(strCost);
+                cost.setEnabled(false);
+                cost.setFocusable(false);
+                cost.setClickable(false);
             }
         }
     }
@@ -77,25 +122,33 @@ public class DisplayContact extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
+        int itemId = item.getItemId();
 
         //moje zmeny
         Bundle extras = getIntent().getExtras();
-        String value = String.valueOf(extras.getInt("id"));
+        int id = extras.getInt("id");
 
-        if (id == R.id.Edit_Contact) {
+        if (itemId == R.id.Edit_Contact) {
             Button saveButton = (Button)findViewById(R.id.buttonSave);
             saveButton.setVisibility(View.VISIBLE);
 
             name.setEnabled(true);
             name.setFocusableInTouchMode(true);
             name.setClickable(true);
+
+            type.setEnabled(true);
+            type.setFocusableInTouchMode(true);
+            type.setClickable(true);
+
+            cost.setEnabled(true);
+            cost.setFocusableInTouchMode(true);
+            cost.setClickable(true);
         }
 
-        if (id == R.id.Delete_Contact) {
+        if (itemId == R.id.Delete_Contact) {
             //TODO odstraneni zaznamu
-//            mydb.removeCurrent(value);
-            Toast.makeText(getApplicationContext(), value + " Deleted Successfully", Toast.LENGTH_SHORT).show();
+            mydb.removeContact(id);
+            Toast.makeText(getApplicationContext(), "Item of id " + id + " successfully deleted", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
         }
@@ -110,12 +163,15 @@ public class DisplayContact extends Activity {
             int value = extras.getInt("id");
             if(value > 0){
                 //TODO update zaznamu
-                mydb.updateContact(value, name.getText().toString());
+                mydb.updateContact(value, name.getText().toString(), String.valueOf(type.getSelectedItem()), cost.getText().toString());
+                Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                startActivity(intent);
             }
             else{
                 //vlozeni zaznamu
-                if(mydb.insertContact(name.getText().toString())){
+                if(mydb.insertContact(name.getText().toString(), String.valueOf(type.getSelectedItem()), cost.getText().toString())){
                     Toast.makeText(getApplicationContext(), "done", Toast.LENGTH_SHORT).show();
+                    Log.d("insert", name.getText().toString() + " " + String.valueOf(type.getSelectedItem()) + " " + cost.getText().toString());
                 }
 
                 else{

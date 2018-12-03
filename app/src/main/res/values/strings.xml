@@ -6,9 +6,11 @@
     <string name="add_new">Add New</string>
     <string name="title_activity_display_contact">DisplayContact</string>
 
-    <string-array name="type_array">
+    <string-array name="fuel_types">
         <item>Natural 95</item>
         <item>Natural 98</item>
+        <item>Diesel</item>
+        <item>Diesel Premium</item>
     </string-array>
 
 </resources>

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SQLiteTest_template.iml" filepath="$PROJECT_DIR$/SQLiteTest_template.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/SQLiteTest.iml" filepath="$PROJECT_DIR$/.idea/SQLiteTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

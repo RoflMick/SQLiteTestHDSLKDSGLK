@@ -7,6 +7,7 @@ import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -41,10 +42,12 @@ public class DBHelper extends SQLiteOpenHelper{
         onCreate(db);
     }
 
-    public boolean insertContact(String name) {
+    public boolean insertContact(String name, String type, String cost) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put("name", name);
+        contentValues.put(CONTACTS_COLUMN_NAME, name);
+        contentValues.put(CONTACTS_COLUMN_TYPE, type);
+        contentValues.put(CONTACTS_COLUMN_COST, cost);
         db.insert("contacts", null, contentValues);
         return true;
     }
@@ -57,14 +60,17 @@ public class DBHelper extends SQLiteOpenHelper{
         return res;
     }
 
-    public boolean updateContact (Integer id, String name) {
+    public boolean updateContact (Integer id, String name, String type, String cost) {
         //TODO update zaznam
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.remove("name");
-        contentValues.put("name", name);
-        db.update("contacts", contentValues, "_id = ?", new String[]{String.valueOf(id)});
+        contentValues.put(CONTACTS_COLUMN_ID, id);
+        contentValues.put(CONTACTS_COLUMN_NAME, name);
+        contentValues.put(CONTACTS_COLUMN_TYPE, type);
+        contentValues.put(CONTACTS_COLUMN_COST, cost);
+        db.update(CONTACTS_TABLE_NAME, contentValues, "id = ?", new String[]{String.valueOf(id)});
         return true;
+
     }
 
     public void setAllContacs() {
@@ -76,6 +82,7 @@ public class DBHelper extends SQLiteOpenHelper{
         while(res.isAfterLast() == false){
             arrayList.add(res.getString(res.getColumnIndex(CONTACTS_COLUMN_NAME)));
             res.moveToNext();
+            arrayList.get(0);
         }
     }
 
@@ -88,8 +95,17 @@ public class DBHelper extends SQLiteOpenHelper{
         db.delete(CONTACTS_TABLE_NAME, "1", null);
     }
 
-    public void removeCurrent(String id) {
+    public void removeContact(Integer id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.delete(CONTACTS_TABLE_NAME, "id = ?", new String[] {id});
+//        String whereClause = "id=?";
+//        String[] whereArgs = new String[] { String.valueOf(id) };
+//        db.delete(CONTACTS_TABLE_NAME, whereClause, whereArgs);
+//        String query =  "DELETE FROM " + CONTACTS_TABLE_NAME + " WHERE "
+//                + CONTACTS_COLUMN_ID + " = '" + id + "'";
+//        db.execSQL(query);
+        db.delete(CONTACTS_TABLE_NAME, "id = ?", new String[]{String.valueOf(id)});
+        db.execSQL("UPDATE " + CONTACTS_TABLE_NAME + " SET id = id - 1 WHERE id > " + id + ";");
+        Log.d("del", "Item of id " + id + " successfully deleted" );
+
     }
 }

@@ -15,27 +15,74 @@
         android:paddingTop="@dimen/activity_vertical_margin"
         android:id="@+id/RL">
 
-
-        <EditText
-            android:id="@+id/editTextName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginTop="5dp"
-            android:layout_marginLeft="82dp"
-            android:ems="10"
-            android:inputType="text">
-        </EditText>
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Name:"
             android:id="@+id/textViewName"
             android:textSize="25dp"
-            android:layout_alignBottom="@+id/editTextName"
+
+            android:layout_marginTop="20dp"
+            android:layout_alignParentLeft="true" />
+
+        <EditText
+            android:id="@+id/editTextName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+
+            android:layout_marginTop="20dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="150dp"
+            android:ems="10">
+        </EditText>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Type of fuel:"
+            android:id="@+id/textViewType"
+            android:textSize="25dp"
+
+            android:layout_below="@+id/textViewName"
+            android:layout_marginTop="50dp"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
+
+        <Spinner
+            android:id="@+id/spinnerType"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_below="@+id/editTextName"
+            android:layout_marginTop="50dp"
+            android:layout_alignParentRight="true"
+            android:ems="10">
+        </Spinner>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cost of fuel:"
+            android:id="@+id/textViewCost"
+            android:textSize="25dp"
+
+            android:layout_below="@+id/textViewType"
+            android:layout_marginTop="50dp"
+            android:layout_alignParentLeft="true" />
+
+        <EditText
+            android:id="@+id/editTextCost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+
+            android:layout_below="@+id/spinnerType"
+            android:layout_marginTop="50dp"
+            android:layout_marginLeft="150dp"
+            android:ems="10"
+            android:layout_alignParentRight="true">
+        </EditText>
 
         <Button
             android:layout_width="wrap_content"
@@ -44,7 +91,8 @@
             android:id="@+id/buttonSave"
             android:onClick="saveButtonAction"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="81dp" />
+            android:layout_below="@+id/textViewCost"
+            android:layout_marginTop="50dp" />
 
     </RelativeLayout>
 </ScrollView>
